@@ -26,22 +26,52 @@ class ReadFromDataSetView(View):
 
 class SpotifyAPIView(View):
     def get(self, request, *args, **kwargs):
-        tracks = MusicTrack.objects.filter(duration_ms=None).all()
-
-        if tracks:
-            
-
+        tracks = MusicTrack.objects.filter(duration_ms=None)[:100]
+        token = input('INPUT SPOTIFY OAUTH TOKEN: ')
         while tracks:
-            
+            ids = ''
+            for track in tracks:
+                ids = ids + track.track_id + ','
+            ids = ids[:-1]
+            payload = {
+                'ids': ids
+            }
+            headers = {
+                'Authorization': 'Bearer ' + token
+            }
+            ret = requests.get(
+                'https://api.spotify.com/v1/audio-features',
+                params=payload,
+                headers=headers
+            )
+            if ret.status_code == 200:
+                trackinfos = json.loads(ret.text)
+                audiofeatures = trackinfos['audio_features']
+                i = 0
+                for track in tracks:
+                    track.danceability = audiofeatures[i]['danceability']
+                    track.energy = audiofeatures[i]['energy']
+                    track.key = audiofeatures[i]['key']
+                    track.loudness = audiofeatures[i]['loudness']
+                    track.mode = audiofeatures[i]['mode']
+                    track.speechiness = audiofeatures[i]['speechiness']
+                    track.acousticness = audiofeatures[i]['acousticness']
+                    track.instrumentalness = audiofeatures[i]['instrumentalness']
+                    track.liveness = audiofeatures[i]['liveness']
+                    track.valence = audiofeatures[i]['valence']
+                    track.tempo = audiofeatures[i]['tempo']
+                    track.duration_ms = audiofeatures[i]['duration_ms']
+                    track.time_signature = audiofeatures[i]['time_signature']
 
-        payload = {
-            'ids': '0kN8xEmgMW9mh7UmDYHlJP,5uCax9HTNlzGybIStD3vDh,7BKLCZ1jbUBVqRi2FVlTVw,2rizacJSyD9S1IQUxUxnsK,5MFzQMkrl1FOOng9tq6R9r'
-        }
-        headers = {
-            'Authorization': 'Bearer BQDKG-6fZOFd_3MTFKf1KpS82M2F2OgC5flQL1z-yDAEtErktdK2UvjDMmwvCNEQjVZnTR44CaNu3lfiE3btuGJCT9eQJMX1VOR33q8BsgDtSGso_fiZpGK5le1iGO7NRj9LQDmDNq3faEQbUZeaDyiaaijDqVkCEU7ryhVtOaI5Jg'
-        }
-        ret = requests.get('https://api.spotify.com/v1/audio-features', params=payload, headers=headers)
-        data = json.loads(ret.text)
-        print(ret)
-        import pdb; pdb.set_trace()
+                    print(dir(track))
+
+                    track.save()
+                    i = i + 1
+
+                tracks = MusicTrack.objects.filter(duration_ms=None)[:100]
+
+            else:
+                print('GET NEW OAUTH TOKEN FROM SPOTIFY')
+                token = input('INPUT SPOTIFY OAUTH TOKEN: ')
+
         return HttpResponse('ok')

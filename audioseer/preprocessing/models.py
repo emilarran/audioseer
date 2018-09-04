@@ -40,7 +40,7 @@ class MusicTrack(models.Model):
 
     rank = models.PositiveSmallIntegerField(blank=True, null=True)
     track_id = models.CharField(max_length=80, blank=True, null=True)
-    acousticneses = models.FloatField(blank=True, null=True)
+    acousticness = models.FloatField(blank=True, null=True)
     danceability = models.FloatField(blank=True, null=True)
     duration_ms = models.PositiveIntegerField(blank=True, null=True)
     energy = models.FloatField(blank=True, null=True)

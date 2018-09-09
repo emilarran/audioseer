@@ -69,6 +69,8 @@ class MusicTrack(models.Model):
             self.mode,
             self.tempo,
             self.time_signature,
+            self.isPopular,
+            self.isNotPopular
         ])
 
     @property

@@ -1,3 +1,4 @@
 from django.contrib import admin
+from preprocessing.models import MusicTrack
 
-# Register your models here.
+admin.site.register(MusicTrack)

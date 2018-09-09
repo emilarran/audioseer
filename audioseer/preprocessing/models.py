@@ -1,4 +1,5 @@
 from django.db import models
+import numpy
 
 # Create your models here.
 
@@ -59,3 +60,23 @@ class MusicTrack(models.Model):
     valence = models.FloatField(blank=True, null=True)
     date = models.DateField(blank=True, null=True)
     streams = models.PositiveIntegerField(blank=True, null=True)
+
+    @property
+    def numpyArray(self):
+        return numpy.array([
+            self.isPopular,
+            self.isNotPopular,
+            self.duration_ms,
+            self.key,
+            self.mode,
+            self.tempo,
+            self.time_signature,
+        ])
+
+    @property
+    def isPopular(self):
+        return 1 if self.rank <= 100 else 0
+
+    @property
+    def isNotPopular(self):
+        return 0 if self.rank <= 100 else 1    

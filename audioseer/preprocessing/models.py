@@ -64,13 +64,18 @@ class MusicTrack(models.Model):
     @property
     def numpyArray(self):
         return numpy.array([
-            self.isPopular,
-            self.isNotPopular,
             self.duration_ms,
             self.key,
             self.mode,
             self.tempo,
             self.time_signature,
+        ])
+
+    @property
+    def popularArray(self):
+        return numpy.array([
+            self.isPopular,
+            self.isNotPopular
         ])
 
     @property

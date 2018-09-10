@@ -27,14 +27,16 @@ class TrainingView(View):
         labels = np.asarray(labels)
         print(labels.shape)
         model = Sequential()
-        model.add(Dense(units=1200, input_dim=5, activation='softmax'))
-        model.add(Dropout(0.4))
+        model.add(Dense(units=312, input_dim=5, activation='relu'))
+        # model.add(Dropout(0.3))
         model.add(Dense(2, activation='softmax'))
         model.compile(optimizer='adam',
                       loss='binary_crossentropy',
                       metrics=['accuracy'])
+        model.summary()
         history = model.fit(
-            scaled, labels, validation_split=0.33, epochs=500, batch_size=200)
+            scaled, labels, validation_split=0.33, epochs=256, batch_size=25, verbose=2)
+        # 500,200
         print(history.history.keys())
         plt.plot(history.history['loss'])
         plt.plot(history.history['val_loss'])

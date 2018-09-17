@@ -69,8 +69,13 @@ class MusicTrack(models.Model):
             self.mode,
             self.tempo,
             self.time_signature,
+            self.danceability,
+            self.energy,
+            self.loudness,
+            self.valence,
+            self.speechiness,
             self.isPopular,
-            self.isNotPopular
+            # self.isNotPopular
         ])
 
     @property
@@ -86,4 +91,4 @@ class MusicTrack(models.Model):
 
     @property
     def isNotPopular(self):
-        return 0 if self.rank <= 100 else 1    
+        return 0 if self.rank <= 100 else 1  

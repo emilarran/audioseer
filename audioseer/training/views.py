@@ -60,9 +60,9 @@ class TrainingView(View):
         for track in trackdata:
             toscale.insert(
                 len(toscale),
-                [track[0], track[1], track[2], track[3], track[4], #, track[5], track[6]])#, track[7]])
+                [track[0], track[1], track[2], track[3], track[4],
                 track[5], track[6], track[7], track[8], track[9]])
-            labels.insert(len(labels), [track[10]])  # , track[11]])
+            labels.insert(len(labels), [track[10]])
 
         scaled = scaler.fit_transform(toscale)
         labels = np.array(labels)
@@ -75,14 +75,13 @@ class TrainingView(View):
                       loss='logcosh',
                       metrics=['accuracy'])
         model.summary()
-        # With logcosh = 0.05 loss with 84-85% accuracy
-        # Wtih binary_crossentropy = 0.35 loss with 83-84% accuracy
+        # With logcosh+adam = 0.05 loss with 84-85% accuracy
+        # Wtih binary_crossentropy+adam = 0.35 loss with 83-84% accuracy
 
         X_train, X_test, y_train, y_test = train_test_split(scaled, labels, test_size=0.33, random_state=0)
 
-
         history = model.fit(
-            X_train, y_train, validation_data=(X_test, y_test), epochs=100, batch_size=32, verbose=2, shuffle=True)
+            X_train, y_train, validation_data=(X_test, y_test), epochs=100, batch_size=10, verbose=2, shuffle=True)
 
         scores = model.evaluate(X_train, y_train)
         print("\n%s: %.2f%%" % (model.metrics_names[1], scores[1] * 100))
@@ -95,9 +94,9 @@ class TrainingView(View):
         rounded_predictions = model.predict_classes(X_test, batch_size=10, verbose=0)
         # Plotting confusion matrix
         cm = confusion_matrix(y_test, rounded_predictions)
-        cm_plot_labels = ['Popular', 'Not_Popular']
+        cm_plot_labels = ['Popular', 'Not Popular']
         plot_confusion_matrix(cm, cm_plot_labels, title='Confusion Matrix')
-
+        model.save('hit_prediction_model.h5')
 
         import pdb; pdb.set_trace()
 
